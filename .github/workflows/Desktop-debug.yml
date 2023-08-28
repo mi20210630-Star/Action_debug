@@ -16,7 +16,7 @@ jobs:
       - name: Configure environment and setup desktop
         run: |
           sudo apt update
-          sudo apt install curl iproute2 systemctl
+          sudo apt install curl iproute2 
           curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
           sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
           docker run -p 8080:80 dorowu/ubuntu-desktop-lxde-vnc
