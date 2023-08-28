@@ -19,8 +19,8 @@ jobs:
           sudo apt install curl iproute2 
           curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
           sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-          docker run cloudflare/cloudflared:latest tunnel --no-autoupdate run --token ${{secrets.CLOUDFLARED_TOKEN}}
           docker run -p 8080:80 dorowu/ubuntu-desktop-lxde-vnc
+          docker run cloudflare/cloudflared:latest tunnel --no-autoupdate run --token ${{secrets.CLOUDFLARED_TOKEN}}
 
       - name: Don't kill instace
         run: sleep ${{github.event.inputs.RUN_TIME}} # Prevent to killing instance after failure
