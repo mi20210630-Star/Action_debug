@@ -1,6 +1,11 @@
 name: docker-desktop-test(2h)
 on:
-  workflow_dispatch
+  workflow_dispatch:
+    inputs:
+      RUN_TIME:
+        description: "RUN_TIME"
+        required: true
+        default: 2h
 
 jobs:
   build:
@@ -14,18 +19,11 @@ jobs:
           sudo apt install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
           curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
           sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-          sudo docker run -d --name=webtop -e PUID=1000 -e PGID=1000 -e TZ=Europe/London -p 3000:3000 -v /path/to/data:/config --shm-size="1gb" --restart unless-stopped ghcr.io/linuxserver/webtop 
-          curl -s https://install.zerotier.com | sudo bash
-          sudo systemctl start zerotier-one.service
-          sudo systemctl enable zerotier-one.service
-          sudo zerotier-cli join ${{ secrets.ZEROTIER_TOKEN }}
-          ip a
-#          wget -q https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-386.zip
-#          unzip ngrok-stable-linux-386.zip
-#          chmod +x ./ngrok
-#          rm -f .ngrok.log
-#          ./ngrok authtoken ${{ secrets.NGROK_TOKEN }}
-#          ./ngrok http 3000
-
+          docker run -p 8080:80 dorowu/ubuntu-desktop-lxde-vnc
+          wget -O cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb && 
+          dpkg -i cloudflared.deb
+          cloudflared tunnel --url http://localhost:80 --no-autoupdate > argo.log 2>&1 &
+          argo_url=$(cat argo.log | grep -oE "https://.*[a-z]+cloudflare.com" | sed "s#https://##")
+          echo $argo_url
       - name: Don't kill instace
-        run: sleep 2h # Prevent to killing instance after failure
+        run: sleep ${{github.event.inputs.RUN_TIME}} # Prevent to killing instance after failure
