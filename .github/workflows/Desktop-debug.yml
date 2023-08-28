@@ -19,7 +19,7 @@ jobs:
           sudo apt install curl iproute2 
           curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
           sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-          docker run -p 8080:80 dorowu/ubuntu-desktop-lxde-vnc
+          sudo docker run -d --name=webtop -e PUID=1000 -e PGID=1000 -e TZ=Europe/London -p 3000:3000 -v /path/to/data:/config --shm-size="1gb" --restart unless-stopped ghcr.io/linuxserver/webtop 
           docker run cloudflare/cloudflared:latest tunnel --no-autoupdate run --token ${{secrets.CLOUDFLARED_TOKEN}}
 
       - name: Don't kill instace
