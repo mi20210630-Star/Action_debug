@@ -1,4 +1,4 @@
-name: docker-desktop-test(2h)
+name: docker-desktop-test
 on:
   workflow_dispatch:
     inputs:
@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Get superuser and configure environment
+      - name: Configure environment and setup desktop
         run: |
           sudo apt update
           sudo apt install curl iproute2 systemctl
